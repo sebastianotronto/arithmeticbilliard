@@ -36,13 +36,53 @@ def get_path(n, sizes, r):
 	path = [r]
 	p = r
 	d = [1] * n
-	steps = 0
+	steps = 1
 	while steps < 2*lcm_list(sizes):
 		p = [p[i] + d[i] for i in range(n)]
 		path.append(p)
 		steps = steps+1
 		d = [d[i] if p[i] % sizes[i] != 0 else -d[i] for i in range(n)]
 	return path
+
+def is_double(path):
+	# A path is double if and only at some point the ball bounces on a
+	# corner and bounces back in the opposite direction. This happens if
+	# and only if for some i we have path[i] = path[i+2]
+	for i in range(0, len(path)-2):
+		if path[i] == path[i+2]:
+			return True
+
+	return False
+
+def print_multiplicities(n, sizes, r):
+	print("")
+	print("Points with multiplicity > 1:")
+	print("")
+
+	d = dict()
+	path = [tuple(x) for x in get_path(n, sizes, r)]
+
+	for point in path:
+		if point in d:
+			d[point] += 1
+		else:
+			d[point] = 1
+
+	if is_double(path):
+		for p in d:
+			d[p] //= 2
+
+	for i in range(2, max(d.values())+1):
+		L = []
+		for point in d:
+			if d[point] == i:
+				L.append(point)
+
+		if len(L) != 0:
+			print(len(L), "point of multiplicity", i)
+			print(L)
+			print("")
+
 
 ###############################################################################
 # This part is specific for 2d drawings
@@ -180,13 +220,19 @@ def user_input():
 	ra = int(input("a-coordinate of r: "))
 	rb = int(input("b-coordinate of r: "))
 	rc = int(input("c-coordinate of r: "))
-	pic = input("Choose p for projections or 3 for 3d (empty = both): ")
+	pic = input("Choose p for projections or 3 for 3d (empty = all, one after the other): ")
 	return [a,b,c], [ra,rb,rc], pic
+
+###############################################################################
+# Main routine below
+###############################################################################
 
 # You can choose to write your input here or to get it interactively
 #sizes, r, pic = [15, 9, 7], [2, 0, 0], "p"
 #sizes, r, pic = [2, 3, 4], [0, 0, 0], "3"
 sizes, r, pic = user_input()
+
+print_multiplicities(len(sizes), sizes, r)
 
 if pic == "p":
 	draw_3d_projections(sizes, r)
