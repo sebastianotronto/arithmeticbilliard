@@ -134,7 +134,7 @@ def draw_path_2d(sizes, r, transformation):
 	plt.plot([p[0] for p in path], [p[1] for p in path], color="blue")
 
 ###############################################################################
-# This part is specific for drawing the 2d projections of 3d billiards
+# This part is specific for 3d billiards
 ###############################################################################
 class Face:
 	def __init__(self, fixed_coordinate, value, transformation):
@@ -170,9 +170,6 @@ def draw_3d_projections(sizes, r):
 		draw_bouncing_points_3d2d(sizes, r, face)
 	plt.show()
 
-###############################################################################
-# This part is for drawing 3d pictures
-###############################################################################
 def draw_line_3d(ax, p1, p2, c="black", w=1):
 	ax.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]], color=c, lw=w)
 
@@ -210,6 +207,41 @@ def draw_3d_picture(sizes, r):
 
 	plt.show()
 
+def edge_number(c1, c2):
+	a = 0 if c1 == 0 else 1
+	b = 0 if c2 == 0 else 1
+	return a + 2*b
+
+def print_points_on_edges_coord(s, path, i):
+	L = [[], [], [], []]
+	Lname = [['*','*','*'],['*','*','*'],['*','*','*'],['*','*','*']]
+	# Kinda ugly way of saying "j and k are the other 2 coordinates"
+	j = 0 if i != 0 else 1
+	k = 2 if i != 2 else 1
+	for p in path:
+		if (p[j] == 0 or p[j] == s[j]) and (p[k] == 0 or p[k] == s[k]):
+			en = edge_number(p[j], p[k])
+			L[en].append(p[i])
+			Lname[en][j] = p[j]
+			Lname[en][k] = p[k]
+
+	for l in range(0,4):
+		if len(L[l]) != 0:
+			so = list(set(L[l]))
+			so.sort()
+			print(len(so), "points on edge", Lname[l], ":", so)
+	
+
+def print_points_on_edges(size, r):
+	# TODO: show a picture of this
+
+	print("")
+
+	path = get_path(3, sizes, r)
+	for i in range(0,3):
+		print_points_on_edges_coord(sizes, path, i)
+		print("")
+
 ###############################################################################
 # Billiard data / user input
 ###############################################################################
@@ -232,7 +264,11 @@ def user_input():
 #sizes, r, pic = [2, 3, 4], [0, 0, 0], "3"
 sizes, r, pic = user_input()
 
+print("---------------------------------")
 print_multiplicities(len(sizes), sizes, r)
+print("---------------------------------")
+print_points_on_edges(sizes, r)
+print("---------------------------------")
 
 if pic == "p":
 	draw_3d_projections(sizes, r)
