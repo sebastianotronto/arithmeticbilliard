@@ -54,11 +54,7 @@ def is_double(path):
 
 	return False
 
-def print_multiplicities(n, sizes, r):
-	print("")
-	print("Points with multiplicity > 1:")
-	print("")
-
+def get_multiplicities(n, sizes, r):
 	d = dict()
 	path = [tuple(x) for x in get_path(n, sizes, r)]
 
@@ -71,6 +67,15 @@ def print_multiplicities(n, sizes, r):
 	if is_double(path):
 		for p in d:
 			d[p] //= 2
+
+	return d
+
+def print_multiplicities(n, sizes, r):
+	d = get_multiplicities(n, sizes, r)
+
+	print("")
+	print("Points with multiplicity > 1:")
+	print("")
 
 	for i in range(2, max(d.values())+1):
 		L = []
@@ -259,21 +264,22 @@ def user_input():
 # Main routine below
 ###############################################################################
 
-# You can choose to write your input here or to get it interactively
-#sizes, r, pic = [15, 9, 7], [2, 0, 0], "p"
-#sizes, r, pic = [2, 3, 4], [0, 0, 0], "3"
-sizes, r, pic = user_input()
+if __name__ == '__main__':
+	# You can choose to write your input here or to get it interactively
+	#sizes, r, pic = [15, 9, 7], [2, 0, 0], "p"
+	#sizes, r, pic = [2, 3, 4], [0, 0, 0], "3"
+	sizes, r, pic = user_input()
 
-print("---------------------------------")
-print_multiplicities(len(sizes), sizes, r)
-print("---------------------------------")
-print_points_on_edges(sizes, r)
-print("---------------------------------")
+	print("---------------------------------")
+	print_multiplicities(len(sizes), sizes, r)
+	print("---------------------------------")
+	print_points_on_edges(sizes, r)
+	print("---------------------------------")
 
-if pic == "p":
-	draw_3d_projections(sizes, r)
-elif pic == "3":
-	draw_3d_picture(sizes, r)
-else:
-	draw_3d_projections(sizes, r)
-	draw_3d_picture(sizes, r)
+	if pic == "p":
+		draw_3d_projections(sizes, r)
+	elif pic == "3":
+		draw_3d_picture(sizes, r)
+	else:
+		draw_3d_projections(sizes, r)
+		draw_3d_picture(sizes, r)
